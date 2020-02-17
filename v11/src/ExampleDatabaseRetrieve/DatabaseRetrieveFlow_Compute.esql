@@ -1,0 +1,17 @@
+CREATE COMPUTE MODULE DatabaseRetrieveFlow_Compute
+  CREATE FUNCTION Main() RETURNS BOOLEAN
+  BEGIN
+    DECLARE InEmployee REFERENCE TO InputRoot.JSON.Data.Employee;
+    CREATE FIELD OutputRoot.JSON.Data.Employee IDENTITY (JSON.Array)Employee;
+    DECLARE OutEmployee REFERENCE TO OutputRoot.JSON.Data.Employee;
+    DECLARE i INTEGER 1;
+    FOR PKEY AS InputRoot.JSON.Data.Employee.PKEY[] DO
+      SET OutEmployee.Item[i].PKEY = PKEY;
+      SET OutEmployee.Item[i].FIRSTNAME = InEmployee.FIRSTNAME[i];
+      SET OutEmployee.Item[i].LASTNAME = InEmployee.LASTNAME[i];
+      SET OutEmployee.Item[i].COUNTRY = InEmployee.COUNTRY[i];
+      SET i = i + 1;
+    END FOR;
+    RETURN TRUE;
+  END;
+END MODULE;
